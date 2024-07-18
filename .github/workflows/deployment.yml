@@ -14,9 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Change directory to projectvis
-        run: cd ProjectVisualiser/  
-
       - name: Install Node.js and dependencies
         uses: actions/setup-node@v2
         with:
@@ -24,8 +21,8 @@ jobs:
 
       - name: Build the project
         run: |
-          npm install
-          npm run build
+          npm --prefix ProjectVisualiser install
+          npm --prefix ProjectVisualiser run build
 
       - name: Create SSH key file
         run: |
