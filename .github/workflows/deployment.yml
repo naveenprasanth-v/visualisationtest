@@ -14,13 +14,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Change directory to projectvis
+        run: cd ProjectVisualiser
+
       - name: Install Node.js and dependencies
         uses: actions/setup-node@v2
         with:
           node-version: '18'
-
-      - name: Change directory to projectvis
-        run: cd ProjectVisualiser
 
       - name: Build the project
         run: |
