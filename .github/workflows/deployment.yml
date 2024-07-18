@@ -29,6 +29,11 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
           chmod 400 ec2_key.pem
 
+      - name: Add SSH key to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts 
+
       - name: Deploy to EC2
         env:
           HOST: ${{ secrets.EC2_HOST }}
