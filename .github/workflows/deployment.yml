@@ -44,8 +44,8 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
-          sudo scp -o StrictHostKeyChecking=no -i ec2_key.pem -r ./dist $USER@$HOST:/var/www/project/
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $USER@$HOST "sudo pm2 startOrReload ecosystem.config.js --env production"
+          sudo scp -i ec2_key.pem  -o StrictHostKeyChecking=no -r ./dist $USER@$HOST:/var/www/project/
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo pm2 startOrReload ecosystem.config.js --env production"
 
       - name: Verify deployment
         env:
