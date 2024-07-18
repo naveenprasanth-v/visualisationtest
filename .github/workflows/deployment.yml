@@ -29,6 +29,10 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
           chmod 400 ec2_key.pem
 
+      - name: Verify SSH key file creation
+         run: |
+           ls -l ec2_key.pem
+
       - name: Add SSH key to known hosts
         run: |
           mkdir -p ~/.ssh
