@@ -39,6 +39,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_KNOWN_HOSTS }}" > ~/.ssh/known_hosts 
 
+      - name: Backup current deployment
+        env:
+          KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ubuntu
+        run: |
+          ssh -i ec2_key.pem $USER@$HOST "cp -r /var/www/project /var/www/project-backup"
+
       - name: Deploy to EC2
         env:
           HOST: ${{ secrets.EC2_HOST }}
@@ -46,9 +54,3 @@ jobs:
         run: |
           sudo scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ProjectVisualiser/dist $USER@$HOST:/var/www/project
 
-      - name: Verify deployment
-        env:
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          curl http://$HOST:5173 # Replace with your actual port if different
