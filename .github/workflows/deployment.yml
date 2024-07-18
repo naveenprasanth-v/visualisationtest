@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Change directory to projectvis
+        run: cd ProjectVisualiser
+
       - name: Build the project
         run: |
           npm install
