@@ -1,0 +1,45 @@
+name: Deploy to EC2 with PM2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js and dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Build the project
+        run: |
+          npm install
+          npm run build
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 400 ec2_key.pem
+
+      - name: Deploy to EC2
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          scp -i ec2_key.pem -r ./dist $USER@$HOST:/var/www/my-app/
+          ssh -i ec2_key.pem $USER@$HOST "sudo pm2 startOrReload ecosystem.config.js --env production"
+
+      - name: Verify deployment
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          curl http://$HOST:5173 # Replace with your actual port if different
