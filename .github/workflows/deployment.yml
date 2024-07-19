@@ -52,5 +52,5 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
-          sudo scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ProjectVisualiser/dist $USER@$HOST:/var/www/project/
+          sudo scp -i ec2_key.pem -o StrictHostKeyChecking=no -r ./ProjectVisualiser/dist $USER@$HOST:/var/www/project
 
