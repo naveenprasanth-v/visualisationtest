@@ -45,7 +45,7 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ubuntu
         run: |
-           ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo cp -r /var/www/project/dist/ /var/www/project-backup/"
+           ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo cp -r /var/www/project/ /var/www/project-backup/"
 
       - name: Deploy to EC2
         env:
