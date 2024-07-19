@@ -1,0 +1,38 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Type "rollback" to trigger the rollback'
+        required: true
+        default: 'rollback'
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if command is "rollback"
+        if: ${{ github.event.inputs.command != 'rollback' }}
+        run: |
+          echo "Invalid command. This workflow can only be triggered with the command 'rollback'."
+          exit 1
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > ec2_key.pem
+          chmod 400 ec2_key.pem
+
+      - name: Add SSH key to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_KNOWN_HOSTS }}" > ~/.ssh/known_hosts 
+
+      - name: Rollback to Previous Build
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo cp -r /var/www/project-backup/* /var/www/project/"
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo systemctl reload nginx"
