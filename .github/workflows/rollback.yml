@@ -34,5 +34,6 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo rm -rf /var/www/project/*"
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo cp -r /var/www/project-backup/* /var/www/project/"
           ssh -i ec2_key.pem -o StrictHostKeyChecking=no $USER@$HOST "sudo systemctl reload nginx"
